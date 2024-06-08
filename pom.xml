@@ -12,7 +12,7 @@
     <artifactId>Bank-Application</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Bank-Application</name>
-    <description>Bank Of Bhara</description>
+    <description>Bank Of Bharat</description>
     <properties>
         <java.version>20</java.version>
     </properties>

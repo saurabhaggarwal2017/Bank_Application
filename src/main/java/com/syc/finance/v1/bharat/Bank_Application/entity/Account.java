@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,10 +26,10 @@ public class Account {
     @Column(nullable = false)
     private String accountType;
     private String bankName;
+    private String branchCode;
     private String bankBranchName;
-    private String routingNumber;
     private String bankPinCode;
-    private String isHaveUpiId;
+    private boolean isHaveUpiId;
     private int accountBalance;
     private String status; // bank active or not.
     private LocalDate localDateTime;
@@ -37,11 +38,11 @@ public class Account {
     @JoinColumn(name = "user_id")
     private User user;
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<UpiInformation> upiInformationList;
+    private List<UpiInformation> upiInformationList = new ArrayList<>();
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private NetBanking netBanking;
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<TransactionHistoryDetails> transactionHistoryDetailsList;
+    private List<TransactionHistoryDetails> transactionHistoryDetailsList = new ArrayList<>();
 
 
 }
