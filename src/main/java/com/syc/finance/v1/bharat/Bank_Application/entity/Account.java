@@ -21,7 +21,7 @@ public class Account {
     private String accountId;
     @Column(unique = true, updatable = false)
     private String accountNumber;
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String ifscCode;
     @Column(nullable = false)
     private String accountType;

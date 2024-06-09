@@ -2,10 +2,7 @@ package com.syc.finance.v1.bharat.Bank_Application.services.AccountService;
 
 import static com.syc.finance.v1.bharat.Bank_Application.constant.AccountDetailsConstant.*;
 
-import com.syc.finance.v1.bharat.Bank_Application.dto.user.UserCreateRequestDto;
-import com.syc.finance.v1.bharat.Bank_Application.dto.user.UserCreateResponseDto;
-import com.syc.finance.v1.bharat.Bank_Application.dto.user.UserDetailsUpdateRequestDto;
-import com.syc.finance.v1.bharat.Bank_Application.dto.user.UserDetailsUpdateResponseDto;
+import com.syc.finance.v1.bharat.Bank_Application.dto.user.*;
 import com.syc.finance.v1.bharat.Bank_Application.entity.Account;
 import com.syc.finance.v1.bharat.Bank_Application.entity.User;
 import com.syc.finance.v1.bharat.Bank_Application.repository.AccountRepo;
@@ -66,7 +63,7 @@ public class AccountServiceImpl implements AccountService {
                 .bankPinCode("")
                 .isHaveUpiId(false)
                 .accountBalance(0)
-                .status(BANK_VI_ACCOUNT_BALANCE_STATUS)
+                .status(BANK_VI_ACCOUNT_STATUS_ACTIVE)
                 .localDateTime(LocalDate.now())
                 .isPhoneNumberLinked(false)
                 // user set in account. imp
@@ -97,6 +94,7 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new RuntimeException("Wrong account details pass by user!!"));
         // TODO: make custom exception for account not found.
 
+        // fetch user
         User user = account.getUser();
         if (!user.getContactPhoneNumber().equals(requestDto.getOldContactPhoneNumber())) {
             throw new RuntimeException("Contact Number not matching!! try again.");
@@ -105,28 +103,21 @@ public class AccountServiceImpl implements AccountService {
         // update details if any field is empty so set old one details.
         user.setAccountHolderName(
                 requestDto.getAccountHolderName().isEmpty() ? user.getAccountHolderName() : requestDto.getAccountHolderName());
-
         user.setContactEmail(
                 requestDto.getContactEmail().isEmpty() ? user.getContactEmail() : requestDto.getContactEmail());
-
         user.setGender(
                 requestDto.getGender().isEmpty() ? user.getGender() : requestDto.getGender());
-
         user.setAddress(
                 requestDto.getAddress().isEmpty() ? user.getAddress() : requestDto.getAddress());
-
         if (!requestDto.getContactPhoneNumber().isEmpty()) {
             // is user update number so unlinked the phone number too.
             user.setContactPhoneNumber(requestDto.getContactPhoneNumber());
             account.setPhoneNumberLinked(false);
         }
-
         user.setPinCodeNumber(
                 requestDto.getPinCodeNumber().isEmpty() ? user.getPinCodeNumber() : requestDto.getPinCodeNumber());
-
         user.setState(
                 requestDto.getState().isEmpty() ? user.getState() : requestDto.getState());
-
         account.setAccountType(
                 requestDto.getAccountType().isEmpty() ? account.getAccountType() : requestDto.getAccountType());
         // save user.
@@ -136,6 +127,51 @@ public class AccountServiceImpl implements AccountService {
         UserDetailsUpdateResponseDto response = mapper.map(updatedUser, UserDetailsUpdateResponseDto.class);
         mapper.map(account, response);
         log.info("complete updating user details....");
+        return response;
+    }
+
+    @Override
+    public UserDeleteResonseDto deleteAccount(UserDeleteRequestDto requestDto) {
+        log.info("delete user..");
+        Account account = accountRepo.findByAccountNumberAndIfscCode(
+                        requestDto.getAccountNumber(), requestDto.getIfscCode())
+                .orElseThrow(() -> new RuntimeException("Wrong account details pass by user!!"));
+        // TODO: make custom exception for account not found.
+
+        // fetch user
+        User user = account.getUser();
+        if (!user.getContactPhoneNumber().equals(requestDto.getContactPhoneNumber())) {
+            throw new RuntimeException("Contact Number not matching!! try again.");
+            // TODO: make new Custom exception.
+        } else if (!user.getAccountHolderName().equalsIgnoreCase(requestDto.getAccountHolderName())) {
+            throw new RuntimeException("Account holder name not Matching..");
+            // TODO: make new Custom exception.
+        } else {
+            UserDeleteResonseDto response = mapper.map(user, UserDeleteResonseDto.class);
+            mapper.map(account, response);
+            // delete user with account.
+            userRepo.delete(user);
+            response.setMessage("Your Account Successfully Deleted...");
+            log.info("User delete successfully..");
+            return response;
+        }
+    }
+
+    @Override
+    public UserAccountResponseDto getAccountDetails(UserAccountRequestDto requestDto) {
+        Account account = accountRepo.findByAccountNumber(requestDto.getAccountNumber())
+                .orElseThrow(() -> new RuntimeException("Wrong account details pass bu user!!"));
+        // TODO: make custom exception for account number not found.
+
+        User user = account.getUser();
+        if (!user.getContactPhoneNumber().equals(requestDto.getContactPhoneNumber())) {
+            throw new RuntimeException("Contact Number not matching!! try again.");
+            // TODO: make custom exception for phone number not found.
+        }
+        // mapping entity to dto..
+        UserAccountResponseDto response = mapper.map(user, UserAccountResponseDto.class);
+        mapper.map(account, response);
+
         return response;
     }
 }

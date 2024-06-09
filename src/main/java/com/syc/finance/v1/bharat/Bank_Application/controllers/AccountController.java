@@ -1,9 +1,6 @@
 package com.syc.finance.v1.bharat.Bank_Application.controllers;
 
-import com.syc.finance.v1.bharat.Bank_Application.dto.user.UserCreateRequestDto;
-import com.syc.finance.v1.bharat.Bank_Application.dto.user.UserCreateResponseDto;
-import com.syc.finance.v1.bharat.Bank_Application.dto.user.UserDetailsUpdateRequestDto;
-import com.syc.finance.v1.bharat.Bank_Application.dto.user.UserDetailsUpdateResponseDto;
+import com.syc.finance.v1.bharat.Bank_Application.dto.user.*;
 import com.syc.finance.v1.bharat.Bank_Application.services.AccountService.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +30,19 @@ public class AccountController {
             @RequestParam String ifscCode,
             @RequestBody UserDetailsUpdateRequestDto userDetailsUpdateRequestDto) {
         UserDetailsUpdateResponseDto response = accountService.updateAccountDetails(accountNumber, ifscCode, userDetailsUpdateRequestDto);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/delete-account")
+    public ResponseEntity<UserDeleteResonseDto> deleteAccount(@RequestBody UserDeleteRequestDto userDeleteRequestDto) {
+        UserDeleteResonseDto response = accountService.deleteAccount(userDeleteRequestDto);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/get-account-details")
+    public ResponseEntity<UserAccountResponseDto> getAccountDetails(@RequestBody UserAccountRequestDto userAccountRequestDto) {
+        UserAccountResponseDto response = accountService.getAccountDetails(userAccountRequestDto);
+        return ResponseEntity.ok(response);
     }
 
 }
