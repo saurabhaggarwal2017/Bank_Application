@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponseDto {
+public class UserCreateRequestDto {
     private String accountHolderName;
     private String contactPhoneNumber;
     private String contactEmail;
@@ -18,13 +18,5 @@ public class UserResponseDto {
     private String pinCodeNumber;
     private String county;
     private String state;
-
     private String accountType;
-    private String accountNumber;
-    private String ifscCode;
-    private String bankName;
-    private String branchCode;
-    private String bankBranchName;
-    private int accountBalance;
-
 }

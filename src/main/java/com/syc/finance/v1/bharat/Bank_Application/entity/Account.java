@@ -30,11 +30,12 @@ public class Account {
     private String bankBranchName;
     private String bankPinCode;
     private boolean isHaveUpiId;
+    private boolean isPhoneNumberLinked;
     private int accountBalance;
     private String status; // bank active or not.
     private LocalDate localDateTime;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

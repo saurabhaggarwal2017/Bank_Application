@@ -30,6 +30,6 @@ public class User {
     private String county;
     private String state;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Account> accountList = new ArrayList<>();
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private Account account;
 }
